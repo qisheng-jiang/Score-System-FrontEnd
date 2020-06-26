@@ -6,6 +6,22 @@
         <h3 class="title">Login Form</h3>
       </div>
 
+      <el-form-item prop="type">
+        <span class="svg-container">
+          <svg-icon icon-class="user" />
+        </span>
+        <el-select
+          ref="type"
+          v-model="loginForm.type"
+          placeholder="类型"
+          name="type"
+          tabindex="1"
+          auto-complete="on"
+        >
+          <el-option v-for="item in options" :key="item.label" :value="item.value" :label="item.label" />
+        </el-select>
+      </el-form-item>
+
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -13,7 +29,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="用户名"
           name="username"
           type="text"
           tabindex="1"
@@ -30,7 +46,7 @@
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
+          placeholder="密码"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -66,16 +82,26 @@ export default {
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
+      if (value.length < 1) {
         callback(new Error('The password can not be less than 6 digits'))
       } else {
         callback()
       }
     }
     return {
+      options: [{
+        value: '0',
+        label: '超级管理员'
+      }, {
+        value: '1',
+        label: '车间管理员'
+      }, {
+        value: '2',
+        label: '小组管理员'
+      }],
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        // username: 'admin',
+        // password: '111111'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -111,6 +137,7 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
+            // alert(111)
             this.loading = false
           }).catch(() => {
             this.loading = false
